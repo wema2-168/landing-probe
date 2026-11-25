@@ -50,7 +50,10 @@ body {
   padding-block: 10px 40px;
 }
 .wrap { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
-header { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.titleblock { min-width: 0; display: flex; flex-direction: column; }
+.headtools { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.headtools button { padding: 8px 12px; }
 h1 { font-family: var(--f-display); font-size: 1.05rem; margin: 0; }
 .stamp { font-family: var(--f-mono); font-size: 0.7rem; color: var(--muted); font-variant-numeric: tabular-nums; }
 .chips { display: flex; flex-wrap: wrap; gap: 5px; }
@@ -91,10 +94,17 @@ textarea#copyFallback { width: 100%; min-height: 120px; font-family: var(--f-mon
 <body>
 <div class="wrap">
   <header>
-    <h1>流入元プローブ</h1>
-    <span class="stamp" id="stamp"></span>
+    <div class="titleblock">
+      <h1>流入元プローブ</h1>
+      <span class="stamp" id="stamp"></span>
+    </div>
+    <div class="headtools">
+      <span class="toast" id="toast" aria-live="polite"></span>
+      <button type="button" class="primary" id="copyBtn">JSONをコピー</button>
+    </div>
   </header>
   <div class="chips" id="chips"></div>
+  <textarea id="copyFallback" hidden readonly aria-label="コピー用テキスト"></textarea>
 
   <div class="card">
     <dl>
@@ -133,11 +143,8 @@ textarea#copyFallback { width: 100%; min-height: 120px; font-family: var(--f-mon
       </table>
     </div>
     <div class="tools">
-      <button type="button" class="primary" id="copyBtn">JSONでコピー</button>
       <button type="button" id="resetBtn">カウントと履歴をリセット</button>
-      <span class="toast" id="toast" aria-live="polite"></span>
     </div>
-    <textarea id="copyFallback" hidden readonly aria-label="コピー用テキスト"></textarea>
   </div>
 </div>
 
@@ -303,7 +310,7 @@ textarea#copyFallback { width: 100%; min-height: 120px; font-family: var(--f-mon
   function toast(msg) { $("toast").textContent = msg; setTimeout(function () { $("toast").textContent = ""; }, 2500); }
   $("copyBtn").addEventListener("click", function () {
     var text = report();
-    var fallback = function () { var ta = $("copyFallback"); ta.value = text; ta.hidden = false; ta.focus(); ta.select(); toast("下の欄を選択しました。手動でコピーしてください"); };
+    var fallback = function () { var ta = $("copyFallback"); ta.value = text; ta.hidden = false; ta.focus(); ta.select(); toast("手動でコピー"); };
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function () { toast("コピーしました"); }, fallback);
     else fallback();
   });
